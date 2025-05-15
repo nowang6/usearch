@@ -283,7 +283,8 @@ void test_minimal_three_vectors(index_at& index, //
         }
     }
 
-    expect(index.save("tmp.usearch"));
+    expect(index.save("/data/local/tmp/tmp.usearch"));
+
 
     // Perform content and scan validations for a copy
     {
@@ -331,7 +332,7 @@ void test_minimal_three_vectors(index_at& index, //
 
     // Check if metadata is retrieved correctly
     if constexpr (punned_ak) {
-        auto head_result = index_dense_metadata_from_path("tmp.usearch");
+        auto head_result = index_dense_metadata_from_path("/data/local/tmp/tmp.usearch");
         expect(head_result);
         expect_eq(3ull, head_result.head.count_present);
     }
@@ -339,7 +340,7 @@ void test_minimal_three_vectors(index_at& index, //
     // Try loading and move assignment
     {
         index_at loaded_index;
-        auto load_result = loaded_index.load("tmp.usearch");
+        auto load_result = loaded_index.load("/data/local/tmp/tmp.usearch");
         expect(load_result);
         index = std::move(loaded_index);
     }
@@ -503,7 +504,7 @@ void test_collection(index_at& index, typename index_at::vector_key_t const star
     });
 
     // Search again over mapped index
-    expect(index.save("tmp.usearch"));
+    expect(index.save("/data/local/tmp/tmp.usearch"));
 
     {
         auto copy_result = index.copy();
@@ -526,7 +527,7 @@ void test_collection(index_at& index, typename index_at::vector_key_t const star
     }
 
     // Recover the state before the duplicate insertion
-    expect(index.view("tmp.usearch"));
+    expect(index.view("/data/local/tmp/tmp.usearch"));
 
     // Parallel search over the same vectors
     executor.fixed(vectors.size(), [&](std::size_t thread, std::size_t task) {
@@ -580,7 +581,7 @@ void test_collection(index_at& index, typename index_at::vector_key_t const star
 
     // Check metadata
     if constexpr (punned_ak) {
-        index_dense_metadata_result_t meta = index_dense_metadata_from_path("tmp.usearch");
+        index_dense_metadata_result_t meta = index_dense_metadata_from_path("/data/local/tmp/tmp.usearch");
         expect(meta);
     }
 }
